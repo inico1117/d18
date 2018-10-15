@@ -44,3 +44,53 @@ cla.fit(vec,y)
 test = [['maybe','dalmation', 'is', 'stupid', 'garbage','stop']]
 test1 = words2vec(VocabList,test)
 print(cla.predict([test1]).reshape(1,-1))
+
+#bayes-email
+import re
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.model_selection import train_test_split
+from sklearn import metrics
+
+# f = open('email/ham/1.txt').read()
+# print(f)
+
+def textParse(string):
+    text = re.split(r'\W*',string)
+    return [word.lower() for word in text if len(word)>2]
+def createVocabList(dataset):
+    VocabSet = set([])
+    for line in dataset:
+        VocabSet = VocabSet | set(line)
+    return list(VocabSet)
+def words2vec(vocabList,inputSet):
+    vec = [0]*len(vocabList)
+    for word in inputSet:
+        if word in vocabList:
+            vec[vocabList.index(word)] = 1
+    return vec
+def spamTest():
+    docList = []
+    labelList = []
+    for i in range(1,26):
+        wordList = textParse(open('email/spam/%d.txt' %i).read())
+        docList.append(list(wordList))
+        labelList.append(1)
+        wordList = textParse(open('email/ham/%d.txt' %i).read())
+        docList.append(list(wordList))
+        labelList.append(0)
+    vocabList = createVocabList(docList)
+    return docList,labelList,vocabList
+X,y,vocabList= spamTest()
+vec = []
+#print(len(X))
+for i in range(50):
+    vec.append(words2vec(vocabList,X[i]))
+#print(words2vec(vocabList,X))
+# print(X)
+# print(y)
+X_train,X_test,y_train,y_test = train_test_split(vec,y,test_size=.3,random_state=1)
+cla = BernoulliNB()
+cla.fit(X_train,y_train)
+y_pred = cla.predict(X_test)
+print(cla.predict(X_test))
+print(metrics.accuracy_score(y_test,y_pred))
