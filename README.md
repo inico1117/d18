@@ -86,8 +86,8 @@ vec = []
 for i in range(50):
     vec.append(words2vec(vocabList,X[i]))
 #print(words2vec(vocabList,X))
-# print(X)
-# print(y)
+#print(X)
+#print(y)
 X_train,X_test,y_train,y_test = train_test_split(vec,y,test_size=.3,random_state=1)
 cla = BernoulliNB()
 cla.fit(X_train,y_train)
