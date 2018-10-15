@@ -51,8 +51,8 @@ from sklearn.naive_bayes import BernoulliNB
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 
-# f = open('email/ham/1.txt').read()
-# print(f)
+#f = open('email/ham/1.txt').read()
+#print(f)
 
 def textParse(string):
     text = re.split(r'\W*',string)
@@ -93,4 +93,28 @@ cla = BernoulliNB()
 cla.fit(X_train,y_train)
 y_pred = cla.predict(X_test)
 print(cla.predict(X_test))
+print(metrics.accuracy_score(y_test,y_pred))
+
+#LogisticRegression
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn import metrics
+
+def loadDataSet():
+    f = open('logistTestSet.txt')
+    data = []
+    labels = []
+    for line in f.readlines():
+        arr = line.strip().split()
+        data.append([1.0,float(arr[0]),float(arr[1])])
+        labels.append(int(arr[2]))
+    return data,labels
+X,y = loadDataSet()
+#print(X)
+#print(y)
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=.3,random_state=1)
+log = LogisticRegression()
+log.fit(X_train,y_train)
+y_pred = log.predict(X_test)
+print(log.predict(X_test))
 print(metrics.accuracy_score(y_test,y_pred))
